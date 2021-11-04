@@ -1,0 +1,23 @@
+{
+  "name": "slack-audary",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/namahu/slack-audary.git"
+  },
+  "keywords": [],
+  "author": "namahu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/namahu/slack-audary/issues"
+  },
+  "homepage": "https://github.com/namahu/slack-audary#readme",
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.38"
+  }
+}
