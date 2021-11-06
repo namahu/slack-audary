@@ -1,0 +1,9 @@
+{
+    "timeZone": "Asia/Tokyo",
+    "dependencies": {},
+    "exceptionLogging": "STACKDRIVER",
+    "runtimeVersion": "V8",
+    "oauth_scopes": [
+        "https://www.googleapis.com/auth/script.external_request"
+    ]
+}
