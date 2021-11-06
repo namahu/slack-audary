@@ -20,11 +20,80 @@ export type RequestParams = {
     display_hours?: "decimal" | "minutes";
 };
 
-export interface ITogglService {
-    getDetailedReport: (params: RequestParams) => string;
+type TotalCurrencies = {
+    currency: string | null;
+    amount: number | null
 }
 
-const createTogglInstance = (token: string) => {
+export type SummaryReportItem = {
+    title: {
+        time_entry: string;
+    };
+    time: number;
+    cur: null;
+    sum: null;
+    rate: null;
+    local_start: string;
+};
+
+export type SummaryReport = {
+    id: number;
+    title: {
+        project: string;
+        client: string;
+        color: string;
+        hex_color: string;
+    },
+    time: number;
+    total_currencies: TotalCurrencies[],
+    items: SummaryReportItem[];
+};
+
+export type DetailReport = {
+    id: number;
+    pid: number;
+    tid: null;
+    uid: number;
+    description: string;
+    start: string;
+    end: string;
+    updated: string;
+    dur: number
+    user: string;
+    use_stop: boolean;
+    client: string;
+    project: string;
+    project_color: string;
+    project_hex_color: string;
+    task: null,
+    billable: null
+    is_billable: boolean;
+    cur: null;
+    tags: string[];
+};
+
+export type ReportResponse = {
+    total_grand: number| null;
+    total_billable: number | null;
+    total_currencies: TotalCurrencies[];
+    data: DetailReport[] | SummaryReport[];
+    total_count?: number;
+    per_page?: number;
+};
+
+export type Response = {
+    ok: boolean;
+    report?: ReportResponse;
+    error?: string;
+};
+
+
+export interface ITogglService {
+    getDetailedReport: (params: RequestParams) => Response;
+    getSummaryReport: (params: RequestParams) => Response;
+}
+
+const createTogglInstance = (token: string): ITogglService => {
     return new TogglService_(token);
 };
 
@@ -47,7 +116,7 @@ class TogglService_ implements ITogglService {
         method: GoogleAppsScript.URL_Fetch.HttpMethod,
         endPoint: string,
         payload: any = null
-    ) => {
+    ): Response => {
         const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
             method: method,
             headers: {
@@ -68,25 +137,33 @@ class TogglService_ implements ITogglService {
         if (responseCode === 200) {
             return {
                 ok: true,
-                data: JSON.parse(resBody)
+                report: JSON.parse(resBody)
             };
         }
 
         return {
             ok: false,
-            data: Utilities.formatString("Request faild. Response Code %d: %s", responseCode, resBody)
+            error: Utilities.formatString("Request faild. Response Code %d: %s", responseCode, resBody)
         }
     }
 
-    getDetailedReport = (params: RequestParams) => {
+    getDetailedReport = (params: RequestParams): Response => {
         const requestParams = this.createRequestParams_(params);
         const endPoint = this.reportsAPIBaseURL
-            + "/details"
-            + "?"
+            + "/details?"
             + requestParams;
 
         return this.sendRequest_("get", endPoint);
     };
+
+    getSummaryReport = (params: RequestParams): Response => {
+        const requestParams = this.createRequestParams_(params);
+        const endPoint = this.reportsAPIBaseURL
+            + "/summary?"
+            + requestParams;
+
+        return this.sendRequest_("get", endPoint);
+    }
 }
 
 export { createTogglInstance };
