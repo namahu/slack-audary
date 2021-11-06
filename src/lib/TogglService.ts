@@ -28,7 +28,7 @@ const createTogglInstance = (token: string) => {
     return new TogglService_(token);
 };
 
-class TogglService_ {
+class TogglService_ implements ITogglService {
     private token: string;
     private reportsAPIBaseURL = "https://api.track.toggl.com/reports/api/v2";
 
@@ -74,14 +74,14 @@ class TogglService_ {
 
         return {
             ok: false,
-            data: Utilities.formatString("Request faild. Response Code &d: $s", responseCode, resBody)
+            data: Utilities.formatString("Request faild. Response Code %d: %s", responseCode, resBody)
         }
     }
 
     getDetailedReport = (params: RequestParams) => {
         const requestParams = this.createRequestParams_(params);
         const endPoint = this.reportsAPIBaseURL
-            + "details"
+            + "/details"
             + "?"
             + requestParams;
 
