@@ -1,3 +1,4 @@
+import { createSlackInstance, ISlackService, SlackMessagePayload } from "./lib/SlackService";
 import { createTogglInstance, ITogglService, RequestParams, SummaryReport } from "./lib/TogglService";
 
 export type Properties = {
@@ -56,11 +57,15 @@ const doPost = (event: GoogleAppsScript.Events.DoPost) => {
         properties
     );
 
-
+    return ask(message);
 
 };
 
-const ask = (message: object) => {
+const ask = (message: object | string) => {
+    if (typeof message === "string") {
+        return ContentService.createTextOutput(message)
+            .setMimeType(ContentService.MimeType.TEXT);
+    }
     return ContentService
         .createTextOutput(JSON.stringify(message))
         .setMimeType(ContentService.MimeType.JSON);
